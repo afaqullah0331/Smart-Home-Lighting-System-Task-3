@@ -1,0 +1,35 @@
+const int pirPin = 2;          // PIR motion sensor OUT pin (purple wire)
+const int ledPin = 3;          // LED pin via resistor (green wire)
+const int ldrPin = A0;         // Photoresistor (LDR) voltage divider pin (yellow wire)
+
+const int darkThreshold = 500; // Adjust based on Serial Monitor light readings (0 - 1023)
+
+void setup() {
+  pinMode(pirPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+  pinMode(ldrPin, INPUT);
+
+  Serial.begin(9600);
+  delay(2000); // Brief PIR sensor stabilization delay
+  Serial.println("Circuit ready.");
+}
+
+void loop() {
+  int motionState = digitalRead(pirPin);
+  int lightLevel = analogRead(ldrPin);
+
+  Serial.print("Motion: ");
+  Serial.print(motionState);
+  Serial.print(" | Light Level: ");
+  Serial.println(lightLevel);
+
+  // Turn LED ON when motion is detected AND it is dark
+  // Flip '<' to '>' if lightLevel increases in the dark in your wiring
+  if (motionState == HIGH && lightLevel < darkThreshold) {
+    digitalWrite(ledPin, HIGH);
+  } else {
+    digitalWrite(ledPin, LOW);
+  }
+
+  delay(100);
+}
